@@ -23,7 +23,7 @@ export function AdminDashboardPage() {
             type="checkbox"
             checked={slaBreachedOnly}
             onChange={(e) => setSlaBreachedOnly(e.target.checked)}
-            className="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+            className="rounded border-gray-300 accent-brand-600 focus:ring-brand-500"
           />
           {t("admin.dashboard.slaBreach")}
         </label>

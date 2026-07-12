@@ -120,7 +120,7 @@ export function ClaimIntakeForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+          className="mt-2 rounded-md bg-gradient-to-r from-brand-500 to-amber-500 px-4 py-2 text-sm font-medium text-white shadow-sm shadow-orange-900/20 transition hover:from-brand-600 hover:to-amber-600 disabled:opacity-50"
         >
           {t("claims.intake.submit")}
         </button>

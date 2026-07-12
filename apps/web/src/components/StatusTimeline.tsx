@@ -32,11 +32,11 @@ export function StatusTimeline({ currentStage }: StatusTimelineProps) {
                 className={[
                   "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
                   isRejected && isCurrent
-                    ? "bg-red-600 text-white"
+                    ? "bg-gradient-to-br from-red-500 to-red-600 text-white shadow-sm"
                     : isComplete
-                      ? "bg-brand-600 text-white"
+                      ? "bg-gradient-to-br from-brand-500 to-amber-500 text-white shadow-sm"
                       : isCurrent
-                        ? "bg-brand-100 text-brand-700 ring-2 ring-brand-600"
+                        ? "bg-white text-brand-700 ring-2 ring-brand-500 shadow-sm"
                         : "bg-gray-200 text-gray-500",
                 ].join(" ")}
                 aria-hidden
@@ -44,7 +44,10 @@ export function StatusTimeline({ currentStage }: StatusTimelineProps) {
                 {isComplete ? "✓" : index + 1}
               </span>
               {index < stages.length - 1 && (
-                <span className={["mt-1 h-8 w-0.5", isComplete ? "bg-brand-600" : "bg-gray-200"].join(" ")} aria-hidden />
+                <span
+                  className={["mt-1 h-8 w-0.5", isComplete ? "bg-gradient-to-b from-brand-500 to-amber-500" : "bg-gray-200"].join(" ")}
+                  aria-hidden
+                />
               )}
             </div>
             <div className="pb-6">

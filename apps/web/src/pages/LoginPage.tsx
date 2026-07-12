@@ -34,12 +34,15 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4">
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-brand-gradient px-4">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.25),transparent_45%)]" />
       <div className="absolute right-4 top-4">
         <LanguageSwitcher />
       </div>
-      <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-sm">
-        <h1 className="mb-6 text-center text-xl font-semibold text-gray-900">{t("app.title")}</h1>
+      <div className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl shadow-orange-900/20 ring-1 ring-black/5">
+        <h1 className="mb-6 bg-gradient-to-r from-brand-600 to-amber-500 bg-clip-text text-center text-2xl font-bold text-transparent">
+          {t("app.title")}
+        </h1>
         <h2 className="mb-4 text-center text-sm text-gray-500">{t("login.title")}</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -75,7 +78,7 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+            className="mt-2 rounded-md bg-gradient-to-r from-brand-500 to-amber-500 px-4 py-2 text-sm font-medium text-white shadow-sm shadow-orange-900/20 transition hover:from-brand-600 hover:to-amber-600 disabled:opacity-50"
           >
             {t("login.submit")}
           </button>

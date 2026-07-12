@@ -19,7 +19,7 @@ export function ClaimListPage() {
         <h1 className="text-lg font-semibold text-gray-900">{t("claims.list.title")}</h1>
         <Link
           to="/claims/new"
-          className="rounded-md bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700"
+          className="rounded-md bg-gradient-to-r from-brand-500 to-amber-500 px-3 py-1.5 text-sm font-medium text-white shadow-sm shadow-orange-900/20 transition hover:from-brand-600 hover:to-amber-600"
         >
           {t("claims.list.newClaim")}
         </Link>

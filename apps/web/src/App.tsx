@@ -26,14 +26,14 @@ function NavBar() {
   };
 
   return (
-    <header className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
-      <Link to="/" className="text-sm font-semibold text-gray-900">
+    <header className="flex items-center justify-between bg-brand-gradient px-4 py-3 shadow-md shadow-orange-900/10">
+      <Link to="/" className="text-sm font-semibold tracking-tight text-white">
         {t("app.title")}
       </Link>
-      <nav className="flex items-center gap-3 text-sm text-gray-600">
+      <nav className="flex items-center gap-3 text-sm text-white/90">
         <span>{homeLabelByRole[user.role]}</span>
         <LanguageSwitcher />
-        <button onClick={logout} className="text-brand-600 hover:underline">
+        <button onClick={logout} className="rounded-full px-2 py-1 text-white/90 transition hover:bg-white/10 hover:text-white">
           {t("nav.logout")}
         </button>
       </nav>
@@ -60,7 +60,7 @@ function HomeRedirect() {
 export function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-white">
         <NavBar />
         <Routes>
           <Route path="/login" element={<LoginPage />} />

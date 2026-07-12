@@ -33,7 +33,7 @@ export function ClaimDetailPage() {
       <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between">
           <h1 className="font-mono text-sm text-gray-500">{claim.claimNumber}</h1>
-          <span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">
+          <span className="rounded-full bg-gradient-to-r from-brand-50 to-amber-50 px-2 py-0.5 text-xs font-medium text-brand-700 ring-1 ring-inset ring-brand-200">
             {t(`claimTypes.${claim.claimType}`)}
           </span>
         </div>

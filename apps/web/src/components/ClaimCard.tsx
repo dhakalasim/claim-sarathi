@@ -8,11 +8,11 @@ export function ClaimCard({ claim }: { claim: Claim }) {
   return (
     <Link
       to={`/claims/${claim.id}`}
-      className="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition hover:border-brand-500 hover:shadow"
+      className="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition hover:border-brand-400 hover:shadow-lg hover:shadow-orange-900/5"
     >
       <div className="flex items-center justify-between gap-2">
         <span className="font-mono text-sm text-gray-500">{claim.claimNumber}</span>
-        <span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">
+        <span className="rounded-full bg-gradient-to-r from-brand-50 to-amber-50 px-2 py-0.5 text-xs font-medium text-brand-700 ring-1 ring-inset ring-brand-200">
           {t(`stages.${claim.currentStage}`)}
         </span>
       </div>

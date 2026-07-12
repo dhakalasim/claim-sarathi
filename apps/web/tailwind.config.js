@@ -5,12 +5,18 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: "#eef6ff",
-          100: "#d9eaff",
-          500: "#2563eb",
-          600: "#1d4ed8",
-          700: "#1e40af",
+          50: "#fff7ed",
+          100: "#ffedd5",
+          200: "#fed7aa",
+          400: "#fb923c",
+          500: "#f97316",
+          600: "#ea580c",
+          700: "#c2410c",
         },
+      },
+      backgroundImage: {
+        "brand-gradient": "linear-gradient(135deg, #fb923c 0%, #f97316 55%, #ea580c 100%)",
+        "brand-gradient-soft": "linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)",
       },
     },
   },
