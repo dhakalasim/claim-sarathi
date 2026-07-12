@@ -1,0 +1,27 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+npm-debug.log*
+
+# uploads (local storage adapter)
+apps/api/uploads/*
+!apps/api/uploads/.gitkeep
+
+# Prisma
+apps/api/prisma/migrations/**/migration.sql.bak
+
+# editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# test / coverage
+coverage/
+
+# turbo/vite caches
+.turbo/
+apps/web/dist/

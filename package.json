@@ -1,0 +1,26 @@
+{
+  "name": "claimsarathi",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Claims tracking and document management platform for Nepal's non-life insurance market",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace apps/api",
+    "dev:web": "npm run dev --workspace apps/web",
+    "build": "npm run build --workspace packages/shared && npm run build --workspace apps/api && npm run build --workspace apps/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "db:migrate": "npm run db:migrate --workspace apps/api",
+    "db:seed": "npm run db:seed --workspace apps/api"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
