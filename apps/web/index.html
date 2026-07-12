@@ -4,6 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ClaimSarathi</title>
+    <script>
+      // Counterpart to public/404.html's GitHub Pages SPA redirect: decode
+      // the real path back out of the query string before React Router
+      // mounts, so deep links and refreshes survive on GitHub Pages.
+      (function () {
+        var search = window.location.search;
+        if (!search[1]) return;
+        var params = {};
+        search
+          .slice(1)
+          .split("&")
+          .forEach(function (kv) {
+            var pair = kv.split("=");
+            params[pair[0]] = pair[1];
+          });
+        if (!params.p) return;
+        var path =
+          window.location.pathname.replace(/\/$/, "") +
+          (params.p || "").replace(/~and~/g, "&") +
+          (params.q ? "?" + params.q.replace(/~and~/g, "&") : "") +
+          window.location.hash;
+        window.history.replaceState(null, "", path);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ClaimSarathi</title>
+    <script>
+      // GitHub Pages has no server-side rewrites, so a direct hit on a
+      // client-side route (e.g. /claim-sarathi/claims/123) 404s here.
+      // Encode the path into a query string and bounce to index.html,
+      // which decodes it back before React Router mounts.
+      // Adapted from https://github.com/rafgraph/spa-github-pages
+      var pathSegmentsToKeep = 1; // keep "/claim-sarathi" (the project page segment)
+      var l = window.location;
+      var redirectPath =
+        l.pathname
+          .split("/")
+          .slice(0, 1 + pathSegmentsToKeep)
+          .join("/") +
+        "/?p=/" +
+        l.pathname.slice(1).split("/").slice(pathSegmentsToKeep).join("/").replace(/&/g, "~and~") +
+        (l.search ? "&q=" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+        l.hash;
+      l.replace(redirectPath);
+    </script>
+  </head>
+  <body></body>
+</html>

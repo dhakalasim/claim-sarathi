@@ -5,6 +5,8 @@ import { useAuth } from "../auth/AuthContext";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { ApiError } from "../api/client";
 
+const isDemoMode = import.meta.env.VITE_DEMO_MODE === "true";
+
 export function LoginPage() {
   const { t } = useTranslation();
   const { login, isAuthenticated } = useAuth();
@@ -22,6 +24,15 @@ export function LoginPage() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
+
+    if (isDemoMode) {
+      // No live API is reachable from this static build — fail fast with a
+      // clear explanation instead of letting the fetch die with a cryptic
+      // network error that reads as "wrong password."
+      setError(t("login.demoDisabled"));
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       await login(identifier, password);
@@ -44,6 +55,12 @@ export function LoginPage() {
           {t("app.title")}
         </h1>
         <h2 className="mb-4 text-center text-sm text-gray-500">{t("login.title")}</h2>
+
+        {isDemoMode && (
+          <p className="mb-4 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-inset ring-amber-200">
+            {t("login.demoBanner")}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>

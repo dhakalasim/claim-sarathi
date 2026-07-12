@@ -14,7 +14,9 @@
     "identifier": "Email or phone",
     "password": "Password",
     "submit": "Log in",
-    "error": "Invalid email/phone or password"
+    "error": "Invalid email/phone or password",
+    "demoBanner": "This is a static UI preview with no live backend — login and data are disabled here.",
+    "demoDisabled": "Login is disabled on this static preview (no backend is connected)."
   },
   "claims": {
     "list": {
