@@ -1,0 +1,205 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  POLICYHOLDER
+  BRANCH_OFFICER
+  SURVEYOR
+  ADMIN
+}
+
+enum ClaimType {
+  MOTOR
+  PROPERTY
+  HEALTH
+  TRAVEL
+  AGRI
+}
+
+enum ClaimStage {
+  REGISTERED
+  DOCUMENTS_UNDER_REVIEW
+  SURVEYOR_ASSIGNED
+  ASSESSMENT_COMPLETE
+  APPROVED
+  REJECTED
+  PAYMENT_PROCESSED
+}
+
+enum DocumentTag {
+  CITIZENSHIP
+  POLICY_COPY
+  BILL
+  PHOTO
+  SURVEYOR_REPORT
+  OTHER
+}
+
+enum DocumentAuditAction {
+  UPLOADED
+  VIEWED
+  DOWNLOADED
+  VERSIONED
+  TAG_CHANGED
+  DELETED
+}
+
+enum NotificationChannel {
+  SMS
+  EMAIL
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String?  @unique
+  phone        String?  @unique
+  passwordHash String
+  fullName     String
+  role         Role
+  branchId     String?
+  locale       String   @default("en")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  policiesOwned          Policy[]           @relation("PolicyHolder")
+  claimsFiled            Claim[]            @relation("ClaimPolicyholder")
+  claimsAsSurveyor       Claim[]            @relation("ClaimSurveyor")
+  claimsAsBranchOfficer  Claim[]            @relation("ClaimBranchOfficer")
+  stageEventsActed       ClaimStageEvent[]  @relation("StageEventActor")
+  documentsUploaded      Document[]         @relation("DocumentUploadedBy")
+  documentAuditLogsActed DocumentAuditLog[] @relation("AuditActor")
+  notifications          Notification[]
+
+  @@map("users")
+}
+
+model Policy {
+  id             String    @id @default(uuid())
+  policyNumber   String    @unique
+  insurerName    String
+  policyholderId String
+  policyholder   User      @relation("PolicyHolder", fields: [policyholderId], references: [id])
+  claimType      ClaimType
+  startDate      DateTime
+  endDate        DateTime
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  claims Claim[]
+
+  @@index([policyholderId])
+  @@map("policies")
+}
+
+model Claim {
+  id              String     @id @default(uuid())
+  claimNumber     String     @unique
+  policyId        String
+  policy          Policy     @relation(fields: [policyId], references: [id])
+  policyholderId  String
+  policyholder    User       @relation("ClaimPolicyholder", fields: [policyholderId], references: [id])
+  claimType       ClaimType
+  incidentDate    DateTime
+  description     String
+  currentStage    ClaimStage @default(REGISTERED)
+  branchOfficerId String?
+  branchOfficer   User?      @relation("ClaimBranchOfficer", fields: [branchOfficerId], references: [id])
+  surveyorId      String?
+  surveyor        User?      @relation("ClaimSurveyor", fields: [surveyorId], references: [id])
+  stageEnteredAt  DateTime   @default(now())
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  stageEvents   ClaimStageEvent[]
+  documents     Document[]
+  notifications Notification[]
+
+  @@index([currentStage, stageEnteredAt])
+  @@index([policyholderId])
+  @@map("claims")
+}
+
+/// Append-only ledger — a claim's history is derived from this, never mutated.
+model ClaimStageEvent {
+  id        String      @id @default(uuid())
+  claimId   String
+  claim     Claim       @relation(fields: [claimId], references: [id])
+  fromStage ClaimStage?
+  toStage   ClaimStage
+  actorId   String
+  actor     User        @relation("StageEventActor", fields: [actorId], references: [id])
+  note      String?
+  createdAt DateTime    @default(now())
+
+  @@index([claimId])
+  @@map("claim_stage_events")
+}
+
+model Document {
+  id           String      @id @default(uuid())
+  claimId      String
+  claim        Claim       @relation(fields: [claimId], references: [id])
+  tag          DocumentTag
+  fileName     String
+  storageKey   String
+  mimeType     String
+  sizeBytes    Int
+  checksum     String
+  version      Int         @default(1)
+  supersedesId String?     @unique
+  supersedes   Document?   @relation("DocumentVersion", fields: [supersedesId], references: [id])
+  supersededBy Document?   @relation("DocumentVersion")
+  uploadedById String
+  uploadedBy   User        @relation("DocumentUploadedBy", fields: [uploadedById], references: [id])
+  createdAt    DateTime    @default(now())
+
+  auditLogs DocumentAuditLog[]
+
+  @@index([claimId])
+  @@map("documents")
+}
+
+/// Append-only — every view/download/upload/tag-change is recorded, never deleted.
+model DocumentAuditLog {
+  id         String              @id @default(uuid())
+  documentId String
+  document   Document            @relation(fields: [documentId], references: [id])
+  action     DocumentAuditAction
+  actorId    String
+  actor      User                @relation("AuditActor", fields: [actorId], references: [id])
+  metadata   Json?
+  createdAt  DateTime            @default(now())
+
+  @@index([documentId])
+  @@map("document_audit_logs")
+}
+
+model Notification {
+  id        String              @id @default(uuid())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id])
+  claimId   String?
+  claim     Claim?              @relation(fields: [claimId], references: [id])
+  channel   NotificationChannel
+  status    NotificationStatus  @default(PENDING)
+  subject   String?
+  body      String
+  sentAt    DateTime?
+  error     String?
+  createdAt DateTime            @default(now())
+
+  @@index([userId])
+  @@map("notifications")
+}
