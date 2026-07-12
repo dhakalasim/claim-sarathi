@@ -1,0 +1,79 @@
+{
+  "app": {
+    "title": "ClaimSarathi"
+  },
+  "nav": {
+    "myClaims": "मेरा दाबीहरू",
+    "branchQueue": "शाखा लाइन",
+    "surveyorQueue": "सर्भेयर लाइन",
+    "adminDashboard": "एडमिन ड्यासबोर्ड",
+    "logout": "लगआउट"
+  },
+  "login": {
+    "title": "ClaimSarathi मा लग इन गर्नुहोस्",
+    "identifier": "इमेल वा फोन नम्बर",
+    "password": "पासवर्ड",
+    "submit": "लग इन",
+    "error": "अमान्य इमेल/फोन वा पासवर्ड"
+  },
+  "claims": {
+    "list": {
+      "title": "मेरा दाबीहरू",
+      "empty": "तपाईंले हालसम्म कुनै दाबी दर्ता गर्नुभएको छैन।",
+      "newClaim": "नयाँ दाबी दर्ता गर्नुहोस्",
+      "claimNumber": "दाबी नं.",
+      "type": "प्रकार",
+      "stage": "स्थिति",
+      "incidentDate": "घटना मिति"
+    },
+    "detail": {
+      "title": "दाबीको विवरण",
+      "description": "विवरण",
+      "documents": "कागजातहरू",
+      "timeline": "स्थिति समयरेखा",
+      "back": "मेरा दाबीहरूमा फर्कनुहोस्"
+    },
+    "intake": {
+      "title": "नयाँ दाबी दर्ता गर्नुहोस्",
+      "policyNumber": "पोलिसी नम्बर",
+      "claimType": "दाबीको प्रकार",
+      "incidentDate": "घटना मिति",
+      "description": "के भयो?",
+      "photos": "फोटोहरू अपलोड गर्नुहोस्",
+      "submit": "दाबी पेश गर्नुहोस्",
+      "success": "दाबी सफलतापूर्वक पेश गरियो।"
+    }
+  },
+  "claimTypes": {
+    "MOTOR": "मोटर",
+    "PROPERTY": "सम्पत्ति",
+    "HEALTH": "स्वास्थ्य",
+    "TRAVEL": "यात्रा",
+    "AGRI": "कृषि"
+  },
+  "stages": {
+    "REGISTERED": "दर्ता भयो",
+    "DOCUMENTS_UNDER_REVIEW": "कागजात समीक्षामा",
+    "SURVEYOR_ASSIGNED": "सर्भेयर तोकियो",
+    "ASSESSMENT_COMPLETE": "मूल्याङ्कन सम्पन्न",
+    "APPROVED": "स्वीकृत",
+    "REJECTED": "अस्वीकृत",
+    "PAYMENT_PROCESSED": "भुक्तानी प्रशोधन भयो"
+  },
+  "branch": {
+    "queue": {
+      "title": "शाखा लाइन"
+    }
+  },
+  "surveyor": {
+    "queue": {
+      "title": "तोकिएका दाबीहरू"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "सबै दाबीहरू",
+      "slaBreach": "SLA उल्लङ्घन (७ दिनभन्दा बढी अड्किएको)"
+    }
+  }
+}

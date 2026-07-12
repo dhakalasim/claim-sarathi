@@ -1,0 +1,79 @@
+{
+  "app": {
+    "title": "ClaimSarathi"
+  },
+  "nav": {
+    "myClaims": "My Claims",
+    "branchQueue": "Branch Queue",
+    "surveyorQueue": "Surveyor Queue",
+    "adminDashboard": "Admin Dashboard",
+    "logout": "Log out"
+  },
+  "login": {
+    "title": "Log in to ClaimSarathi",
+    "identifier": "Email or phone",
+    "password": "Password",
+    "submit": "Log in",
+    "error": "Invalid email/phone or password"
+  },
+  "claims": {
+    "list": {
+      "title": "My Claims",
+      "empty": "You haven't filed any claims yet.",
+      "newClaim": "File a new claim",
+      "claimNumber": "Claim #",
+      "type": "Type",
+      "stage": "Status",
+      "incidentDate": "Incident date"
+    },
+    "detail": {
+      "title": "Claim details",
+      "description": "Description",
+      "documents": "Documents",
+      "timeline": "Status timeline",
+      "back": "Back to my claims"
+    },
+    "intake": {
+      "title": "File a new claim",
+      "policyNumber": "Policy number",
+      "claimType": "Claim type",
+      "incidentDate": "Incident date",
+      "description": "What happened?",
+      "photos": "Upload photos",
+      "submit": "Submit claim",
+      "success": "Claim submitted successfully."
+    }
+  },
+  "claimTypes": {
+    "MOTOR": "Motor",
+    "PROPERTY": "Property",
+    "HEALTH": "Health",
+    "TRAVEL": "Travel",
+    "AGRI": "Agriculture"
+  },
+  "stages": {
+    "REGISTERED": "Registered",
+    "DOCUMENTS_UNDER_REVIEW": "Documents Under Review",
+    "SURVEYOR_ASSIGNED": "Surveyor Assigned",
+    "ASSESSMENT_COMPLETE": "Assessment Complete",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "PAYMENT_PROCESSED": "Payment Processed"
+  },
+  "branch": {
+    "queue": {
+      "title": "Branch Queue"
+    }
+  },
+  "surveyor": {
+    "queue": {
+      "title": "Assigned Claims"
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "All Claims",
+      "slaBreach": "SLA breach (stuck > 7 days)"
+    }
+  }
+}
