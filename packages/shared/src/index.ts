@@ -6,3 +6,4 @@ export * from "./schemas/auth.schema.js";
 export * from "./schemas/claim.schema.js";
 export * from "./schemas/document.schema.js";
 export * from "./schemas/notification.schema.js";
+export * from "./schemas/assistant.schema.js";

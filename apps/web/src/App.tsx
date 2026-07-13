@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LanguageSwitcher } from "./components/LanguageSwitcher";
+import { AssistantWidget } from "./components/AssistantWidget";
 import { LoginPage } from "./pages/LoginPage";
 import { ClaimListPage } from "./pages/policyholder/ClaimListPage";
 import { ClaimDetailPage } from "./pages/policyholder/ClaimDetailPage";
@@ -39,6 +40,12 @@ function NavBar() {
       </nav>
     </header>
   );
+}
+
+function AssistantWidgetGate() {
+  const { user } = useAuth();
+  if (!user) return null;
+  return <AssistantWidget />;
 }
 
 function HomeRedirect() {
@@ -89,6 +96,7 @@ export function App() {
             }
           />
         </Routes>
+        <AssistantWidgetGate />
       </div>
     </AuthProvider>
   );

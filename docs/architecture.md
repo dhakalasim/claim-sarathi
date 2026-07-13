@@ -108,3 +108,16 @@ Versioning uses a self-relation (`Document.supersedesId` → `Document.id`) rath
 `apps/web/src/mocks/` is an [MSW](https://mswjs.io/) service worker that intercepts every `fetch` the frontend makes and answers from an in-memory store — it exists only because GitHub Pages can't host `apps/api` or Postgres, and only loads when `VITE_DEMO_MODE=true` (set by `.github/workflows/deploy-pages.yml`; a real deployment behind a real API never imports this code, and it's dynamically `import()`-ed so it isn't even in that bundle).
 
 It intentionally reuses `packages/shared`'s `CLAIM_STAGE_TRANSITIONS`/`TERMINAL_STAGES` for stage-graph legality and mirrors (but doesn't share code with) `apps/api`'s `STAGE_ENTRY_PERMISSIONS` role checks — good enough for a demo to behave consistently with the real state machine, without pulling a Node-side module into a browser bundle. `apps/web/src/mocks/data.ts` mirrors `apps/api/prisma/seed.ts`'s users/policies/claims so the demo tells the same story as a real local run. Everything lives in plain module-level arrays/maps, so a page reload resets it to the seed state — there is no persistence layer to speak of, by design.
+
+### The AI claims assistant is a tool-use agent, scoped server-side
+
+`apps/api/src/modules/assistant/` answers natural-language claim questions ("where's my claim CS-...", "what claims do I have") through Claude's Messages API with tool use (`client.beta.messages.toolRunner`, model `claude-opus-4-8`), not a single stuffed-context prompt. The model decides which of two read-only tools to call — `list_my_claims` and `get_claim_detail` — and can chain them (list first, then drill into one) before answering.
+
+Two trust boundaries matter here, same principle as everywhere else in this codebase — never trust the caller, extended to "never trust what the model asks a tool to fetch":
+
+- **`list_my_claims` reuses `ClaimsService.listClaims`'s existing role scoping** — a policyholder's tool call can only ever see their own claims, a surveyor only their assigned ones, and so on, using the exact same `where` clause the real `GET /claims` route builds.
+- **`get_claim_detail` takes a claim number chosen by the model**, which could in principle be one a user prompt-injects that isn't theirs. `apps/api/src/modules/assistant/scope.ts` (`isClaimInScope`, unit-tested in `tests/assistant-scope.test.ts`) re-checks ownership on every single lookup, independent of the model's intent — a claim outside the caller's scope comes back as "not found," never as a confirmation that it exists but is off-limits.
+
+The assistant is deliberately read-only: no tool can transition a stage, assign staff, or touch documents. `ANTHROPIC_API_KEY` is optional at the environment level — without it, `POST /assistant/chat` returns a `503` with a clear message rather than the whole API failing to start, so the scaffold doesn't require a paid key to run.
+
+On the GitHub Pages demo, the same endpoint is answered by a small rule-based MSW handler instead of a real model call — embedding a real API key in a public static bundle is never safe. See "The GitHub Pages demo runs a mock backend, not a stub" above for why that pattern exists elsewhere in this repo too.

@@ -42,6 +42,14 @@ function userPublic(user: MockUser) {
   return { id: user.id, fullName: user.fullName, role: user.role, locale: user.locale };
 }
 
+/** Mirrors apps/api's ClaimsService.listClaims role-scoping — same rule, same data shape. */
+function scopedClaimsFor(user: MockUser): Claim[] {
+  if (user.role === "POLICYHOLDER") return claims.filter((c) => c.policyholderId === user.id);
+  if (user.role === "SURVEYOR") return claims.filter((c) => c.surveyorId === user.id);
+  if (user.role === "BRANCH_OFFICER") return claims.filter((c) => c.branchOfficerId === user.id);
+  return claims;
+}
+
 /** Mirrors apps/api's claim-state-machine.ts STAGE_ENTRY_PERMISSIONS — which role may move a claim into a given stage. */
 const STAGE_ENTRY_PERMISSIONS: Record<ClaimStage, readonly Role[]> = {
   REGISTERED: ["POLICYHOLDER"],
@@ -51,6 +59,16 @@ const STAGE_ENTRY_PERMISSIONS: Record<ClaimStage, readonly Role[]> = {
   APPROVED: ["BRANCH_OFFICER"],
   REJECTED: ["BRANCH_OFFICER"],
   PAYMENT_PROCESSED: ["BRANCH_OFFICER"],
+};
+
+const STAGE_LABELS: Record<ClaimStage, string> = {
+  REGISTERED: "Registered",
+  DOCUMENTS_UNDER_REVIEW: "Documents Under Review",
+  SURVEYOR_ASSIGNED: "Surveyor Assigned",
+  ASSESSMENT_COMPLETE: "Assessment Complete",
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
+  PAYMENT_PROCESSED: "Payment Processed",
 };
 
 async function sha256Hex(data: ArrayBuffer): Promise<string> {
@@ -145,10 +163,7 @@ export const handlers = [
     const page = Number(url.searchParams.get("page") ?? "1");
     const pageSize = Number(url.searchParams.get("pageSize") ?? "20");
 
-    let scoped = claims;
-    if (user.role === "POLICYHOLDER") scoped = scoped.filter((c) => c.policyholderId === user.id);
-    else if (user.role === "SURVEYOR") scoped = scoped.filter((c) => c.surveyorId === user.id);
-    else if (user.role === "BRANCH_OFFICER") scoped = scoped.filter((c) => c.branchOfficerId === user.id);
+    let scoped = scopedClaimsFor(user);
 
     if (stage) scoped = scoped.filter((c) => c.currentStage === stage);
     if (claimType) scoped = scoped.filter((c) => c.claimType === claimType);
@@ -312,5 +327,39 @@ export const handlers = [
 
   http.get("*/documents/:id/audit-log", ({ params }) => {
     return HttpResponse.json(auditLogsByDocument.get(params.id as string) ?? []);
+  }),
+
+  // Rule-based stand-in for the real /assistant/chat endpoint (which calls the
+  // actual Claude API server-side). There is no backend here to call, and a
+  // real API key must never be embedded in a public static bundle — so this
+  // answers from the same mock claim data instead, without any LLM call.
+  http.post("*/assistant/chat", async ({ request }) => {
+    const user = currentUser(request);
+    if (!user) return HttpResponse.json({ error: "unauthorized", message: "missing or invalid token" }, { status: 401 });
+
+    const body = (await request.json()) as { messages: { role: string; content: string }[] };
+    const question = body.messages[body.messages.length - 1]?.content ?? "";
+    const myClaims = scopedClaimsFor(user);
+
+    const claimNumberMatch = question.match(/CS-[A-Z0-9-]+/i)?.[0]?.toUpperCase();
+    if (claimNumberMatch) {
+      const claim = myClaims.find((c) => c.claimNumber === claimNumberMatch);
+      const reply = claim
+        ? `${claim.claimNumber} (${claim.claimType}) is currently "${STAGE_LABELS[claim.currentStage]}". Filed for: ${claim.description}`
+        : `I couldn't find a claim numbered ${claimNumberMatch} in your account.`;
+      return HttpResponse.json({ reply });
+    }
+
+    if (myClaims.length === 0) {
+      return HttpResponse.json({ reply: "You don't have any claims on file yet." });
+    }
+
+    const list = myClaims
+      .slice(0, 5)
+      .map((c) => `• ${c.claimNumber} — ${c.claimType}, ${STAGE_LABELS[c.currentStage]}`)
+      .join("\n");
+    return HttpResponse.json({
+      reply: `Here's what I can see:\n${list}\n\nAsk me about a specific claim number for more detail. (This demo runs a simplified rule-based responder in your browser — the real deployment asks Claude.)`,
+    });
   }),
 ];

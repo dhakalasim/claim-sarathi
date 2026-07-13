@@ -7,6 +7,7 @@ import { jwtPlugin } from "./plugins/jwt.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
 import { claimsRoutes } from "./modules/claims/claims.routes.js";
 import { documentsRoutes } from "./modules/documents/documents.routes.js";
+import { assistantRoutes } from "./modules/assistant/assistant.routes.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
@@ -21,6 +22,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(authRoutes);
   await app.register(claimsRoutes);
   await app.register(documentsRoutes);
+  await app.register(assistantRoutes);
 
   return app;
 }

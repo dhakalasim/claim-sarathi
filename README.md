@@ -13,7 +13,8 @@ ClaimSarathi is a claims pipeline that:
 
 - gives **policyholders** a real-time view of where their claim stands,
 - gives **insurers** (branch officers, surveyors, admins) a structured queue instead of a filing cabinet and a phone line,
-- and makes documents **impossible to lose quietly** — every upload is checksummed and every access is logged.
+- makes documents **impossible to lose quietly** — every upload is checksummed and every access is logged,
+- and answers "where's my claim?" instantly via an **AI claims assistant** — a chat widget backed by a Claude tool-use agent that reads the signed-in user's own claim data (and nothing else) and answers in plain, bilingual language.
 
 The initial design partner is **Shikhar Insurance**, but nothing in the data model or business logic assumes a single insurer — `Policy.insurerName` is data, not code, so onboarding additional insurers later doesn't require a schema change.
 
@@ -22,6 +23,8 @@ The initial design partner is **Shikhar Insurance**, but nothing in the data mod
 **https://dhakalasim.github.io/claim-sarathi/**
 
 `apps/web` deployed to GitHub Pages as a static build (`.github/workflows/deploy-pages.yml`, runs on every push to `main`). GitHub Pages can't run the Fastify API or Postgres, so this build runs an **in-browser mock backend** ([MSW](https://mswjs.io/)) seeded with the same demo data as `apps/api/prisma/seed.ts` — login, the claim pipeline, the status timeline, document upload with checksums, and the admin SLA-breach flag all genuinely work, entirely client-side. A banner on the login page has one-click buttons to sign in as each role.
+
+The chat widget is there too, but it's a rule-based stand-in on this deployment (not a real Claude call) — a public static bundle can never safely hold an API key. It answers from the same mock claim data so the widget still feels real. The genuine AI assistant runs server-side only, in `apps/api` — see below.
 
 The trade-off: it's **all fake data living in memory** — nothing is persisted, and a page reload resets it back to the seed state. It's there to let you click through the real UX without standing up Postgres. For the real thing (actual persistence, real JWT auth, real Prisma/Postgres), run the full stack locally per [Getting started](#getting-started) below.
 
@@ -94,6 +97,15 @@ npm run dev:web
 The API listens on `http://localhost:4000`, the web app on `http://localhost:5173`.
 
 All seeded demo users share the password `Password123!` — see `apps/api/prisma/seed.ts` for the full list of seeded emails (e.g. `sita.sharma@example.com` as a policyholder, `suresh.koirala@shikhar.example` as a branch officer, `bishnu.adhikari@shikhar.example` as a surveyor, `sunita.bhattarai@shikhar.example` as an admin).
+
+### AI claims assistant (optional)
+
+The chat widget calls `POST /assistant/chat`, which uses the Claude API with tool use to answer questions grounded in the signed-in user's own claim data. It's optional — without a key, the endpoint returns a clear "not configured" error instead of the API failing to start:
+
+```bash
+# in .env
+ANTHROPIC_API_KEY=sk-ant-...   # get one at console.anthropic.com
+```
 
 ### Running everything via Docker Compose
 

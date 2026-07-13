@@ -76,5 +76,15 @@
       "title": "All Claims",
       "slaBreach": "SLA breach (stuck > 7 days)"
     }
+  },
+  "assistant": {
+    "title": "ClaimSarathi Assistant",
+    "greeting": "Hi! Ask me about your claims — e.g. \"Where is my claim CS-202601-A1B2C3?\" or \"What claims do I have?\"",
+    "placeholder": "Ask about your claims...",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "close": "Close",
+    "notConfigured": "The AI assistant isn't connected on this server yet.",
+    "error": "Something went wrong — please try again."
   }
 }

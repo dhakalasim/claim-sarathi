@@ -10,6 +10,8 @@ const envSchema = z.object({
   STORAGE_LOCAL_ROOT: z.string().default("./uploads"),
   SMS_PROVIDER: z.enum(["console"]).default("console"),
   EMAIL_PROVIDER: z.enum(["console"]).default("console"),
+  /** Optional — the AI claims assistant (POST /assistant/chat) responds with a clear "not configured" error when this is unset, rather than the API failing to start. */
+  ANTHROPIC_API_KEY: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
