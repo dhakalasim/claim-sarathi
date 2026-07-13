@@ -1,5 +1,8 @@
 # ClaimSarathi
 
+[![CI](https://github.com/dhakalasim/claim-sarathi/actions/workflows/ci.yml/badge.svg)](https://github.com/dhakalasim/claim-sarathi/actions/workflows/ci.yml)
+[![Deploy static UI preview](https://github.com/dhakalasim/claim-sarathi/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/dhakalasim/claim-sarathi/actions/workflows/deploy-pages.yml)
+
 Claims tracking and document management for Nepal's non-life insurance market.
 
 ## The problem
