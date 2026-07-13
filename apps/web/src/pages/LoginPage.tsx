@@ -6,6 +6,15 @@ import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { ApiError } from "../api/client";
 
 const isDemoMode = import.meta.env.VITE_DEMO_MODE === "true";
+const DEMO_PASSWORD = "Password123!";
+
+/** Mirrors apps/api/prisma/seed.ts / src/mocks/data.ts — one representative user per role. */
+const DEMO_ACCOUNTS: { label: string; email: string }[] = [
+  { label: "Policyholder", email: "ram.thapa@example.com" },
+  { label: "Branch officer", email: "suresh.koirala@shikhar.example" },
+  { label: "Surveyor", email: "bishnu.adhikari@shikhar.example" },
+  { label: "Admin", email: "sunita.bhattarai@shikhar.example" },
+];
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -24,15 +33,6 @@ export function LoginPage() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
-
-    if (isDemoMode) {
-      // No live API is reachable from this static build — fail fast with a
-      // clear explanation instead of letting the fetch die with a cryptic
-      // network error that reads as "wrong password."
-      setError(t("login.demoDisabled"));
-      return;
-    }
-
     setIsSubmitting(true);
     try {
       await login(identifier, password);
@@ -42,6 +42,12 @@ export function LoginPage() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function fillDemoAccount(email: string) {
+    setIdentifier(email);
+    setPassword(DEMO_PASSWORD);
+    setError(null);
   }
 
   return (
@@ -57,9 +63,21 @@ export function LoginPage() {
         <h2 className="mb-4 text-center text-sm text-gray-500">{t("login.title")}</h2>
 
         {isDemoMode && (
-          <p className="mb-4 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-inset ring-amber-200">
-            {t("login.demoBanner")}
-          </p>
+          <div className="mb-4 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-inset ring-amber-200">
+            <p className="mb-2">{t("login.demoBanner")}</p>
+            <div className="flex flex-wrap gap-1.5">
+              {DEMO_ACCOUNTS.map((account) => (
+                <button
+                  key={account.email}
+                  type="button"
+                  onClick={() => fillDemoAccount(account.email)}
+                  className="rounded-full bg-white px-2 py-1 font-medium text-amber-800 ring-1 ring-inset ring-amber-300 transition hover:bg-amber-100"
+                >
+                  {account.label}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

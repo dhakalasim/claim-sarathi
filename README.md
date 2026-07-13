@@ -17,11 +17,13 @@ ClaimSarathi is a claims pipeline that:
 
 The initial design partner is **Shikhar Insurance**, but nothing in the data model or business logic assumes a single insurer — `Policy.insurerName` is data, not code, so onboarding additional insurers later doesn't require a schema change.
 
-## Static UI preview
+## Live demo
 
 **https://dhakalasim.github.io/claim-sarathi/**
 
-This is `apps/web` deployed to GitHub Pages as a static build (`.github/workflows/deploy-pages.yml`, runs on every push to `main`). GitHub Pages only serves static files — it can't run the Fastify API or Postgres — so **login and every data-driven page are intentionally disabled** in this build (a visible banner on the login page says so; submitting the form shows a clear "no backend connected" message instead of a confusing network error). It's there to preview the UI/design, not to demo working functionality. For that, run the full stack locally per [Getting started](#getting-started) below.
+`apps/web` deployed to GitHub Pages as a static build (`.github/workflows/deploy-pages.yml`, runs on every push to `main`). GitHub Pages can't run the Fastify API or Postgres, so this build runs an **in-browser mock backend** ([MSW](https://mswjs.io/)) seeded with the same demo data as `apps/api/prisma/seed.ts` — login, the claim pipeline, the status timeline, document upload with checksums, and the admin SLA-breach flag all genuinely work, entirely client-side. A banner on the login page has one-click buttons to sign in as each role.
+
+The trade-off: it's **all fake data living in memory** — nothing is persisted, and a page reload resets it back to the seed state. It's there to let you click through the real UX without standing up Postgres. For the real thing (actual persistence, real JWT auth, real Prisma/Postgres), run the full stack locally per [Getting started](#getting-started) below.
 
 ## Architecture at a glance
 

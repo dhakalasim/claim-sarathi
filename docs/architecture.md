@@ -102,3 +102,9 @@ Versioning uses a self-relation (`Document.supersedesId` → `Document.id`) rath
 ### Insurer-agnostic by construction
 
 `Policy.insurerName` is a plain string column, not an enum or a foreign key to a hardcoded "Shikhar Insurance" record. Nothing in the claims, documents, or notification logic branches on which insurer a policy belongs to. Onboarding a second insurer is a data-entry exercise, not a migration.
+
+### The GitHub Pages demo runs a mock backend, not a stub
+
+`apps/web/src/mocks/` is an [MSW](https://mswjs.io/) service worker that intercepts every `fetch` the frontend makes and answers from an in-memory store — it exists only because GitHub Pages can't host `apps/api` or Postgres, and only loads when `VITE_DEMO_MODE=true` (set by `.github/workflows/deploy-pages.yml`; a real deployment behind a real API never imports this code, and it's dynamically `import()`-ed so it isn't even in that bundle).
+
+It intentionally reuses `packages/shared`'s `CLAIM_STAGE_TRANSITIONS`/`TERMINAL_STAGES` for stage-graph legality and mirrors (but doesn't share code with) `apps/api`'s `STAGE_ENTRY_PERMISSIONS` role checks — good enough for a demo to behave consistently with the real state machine, without pulling a Node-side module into a browser bundle. `apps/web/src/mocks/data.ts` mirrors `apps/api/prisma/seed.ts`'s users/policies/claims so the demo tells the same story as a real local run. Everything lives in plain module-level arrays/maps, so a page reload resets it to the seed state — there is no persistence layer to speak of, by design.

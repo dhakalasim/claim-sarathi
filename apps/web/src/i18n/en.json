@@ -15,8 +15,7 @@
     "password": "Password",
     "submit": "Log in",
     "error": "Invalid email/phone or password",
-    "demoBanner": "This is a static UI preview with no live backend — login and data are disabled here.",
-    "demoDisabled": "Login is disabled on this static preview (no backend is connected)."
+    "demoBanner": "This is a static demo running entirely in your browser (fake data, no real backend — resets on reload). Try one of these:"
   },
   "claims": {
     "list": {
